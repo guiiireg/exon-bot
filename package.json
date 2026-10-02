@@ -1,0 +1,24 @@
+{
+  "name": "exon-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guiiireg/exon-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guiiireg/exon-bot/issues"
+  },
+  "homepage": "https://github.com/guiiireg/exon-bot#readme",
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.5"
+  }
+}
