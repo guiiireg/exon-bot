@@ -7,8 +7,7 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.reply(
-      `Username: {interaction.user.username}\n`,
-      `ID: ${interaction.user.id}`,
+      `Username: ${interaction.user.username}\nID: ${interaction.user.id}`,
     );
   },
 };
