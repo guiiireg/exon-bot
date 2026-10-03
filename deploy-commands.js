@@ -3,6 +3,11 @@ const fs = require("node:fs");
 const path = require("node:path");
 require("dotenv").config();
 
+// Slash command deployment script.
+// Collects serialized command schemas (`command.data.toJSON()`) from `commands/`
+// and registers them directly to the specified guild via Discord's REST API.
+// Guild-scoped deployment is used because changes take effect immediately.
+
 const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT = process.env.CLIENT_ID;
 const GUILD = process.env.GUILD_ID;

@@ -10,6 +10,12 @@ module.exports = {
         .setDescription("The command to reload.")
         .setRequired(true),
     ),
+  /**
+   * Clears module cache and re-imports a command without restarting the bot.
+   *
+   * @param {import("discord.js").ChatInputCommandInteraction} interaction - Command interaction.
+   * @returns {Promise<void>}
+   */
   async execute(interaction) {
     const command_name = interaction.options
       .getString("command", true)
@@ -21,6 +27,8 @@ module.exports = {
         `There is no command with the name \`${command_name}\`!`,
       );
     }
+
+    // Purge module from Node's require cache so subsequent require() loads fresh code.
     delete require.cache[require.resolve(`./${command.data.name}.js`)];
 
     try {

@@ -2,6 +2,12 @@ const { Events, MessageFlags } = require("discord.js");
 
 module.exports = {
   name: Events.InteractionCreate,
+  /**
+   * Routes incoming interactions to their command handlers and handles uncaught errors.
+   *
+   * @param {import("discord.js").BaseInteraction} interaction - Interaction received from Discord gateway.
+   * @returns {Promise<void>}
+   */
   async execute(interaction) {
     if (!interaction.isChatInputCommand()) return;
 
@@ -18,6 +24,7 @@ module.exports = {
       await command.execute(interaction);
     } catch (error) {
       console.error(error);
+      // Discord rejects reply() if already acknowledged or deferred. Use followUp() in that state.
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: "There was an error while executing this command!",

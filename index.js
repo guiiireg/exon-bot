@@ -8,9 +8,14 @@ const TOKEN = process.env.DISCORD_TOKEN;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
+// Application entry point: initializes the Discord client, loads command
+// handlers into client.commands, registers gateway event listeners, and logs in.
+
 client.commands = new Collection();
 const folders_path = path.join(__dirname, "commands");
 const command_folders = fs.readdirSync(folders_path);
+
+// Dynamically register commands. Each command module must export { data, execute }.
 
 for (const folder of command_folders) {
   const commands_path = path.join(folders_path, folder);
@@ -30,6 +35,7 @@ for (const folder of command_folders) {
   }
 }
 
+// Dynamically bind gateway event handlers. Each module exports { name, once?, execute }.
 const events_path = path.join(__dirname, "events");
 const event_files = fs
   .readdirSync(events_path)
