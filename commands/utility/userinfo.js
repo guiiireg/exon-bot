@@ -12,8 +12,9 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async execute(interaction) {
+    const joined = interaction.member?.joinedAt ?? "N/A";
     await interaction.reply(
-      `Username: ${interaction.user.username}\nID: ${interaction.user.id}\nJoined: ${interaction.member.joinedAt}`,
+      `Username: ${interaction.user.username}\nID: ${interaction.user.id}\nJoined: ${joined}`,
     );
   },
 };
