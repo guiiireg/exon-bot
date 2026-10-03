@@ -25,17 +25,12 @@ module.exports = {
     } catch (error) {
       console.error(error);
       // Discord rejects reply() if already acknowledged or deferred. Use followUp() in that state.
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
-          content: "There was an error while executing this command!",
-          flags: MessageFlags.Ephemeral,
-        });
-      } else {
-        await interaction.reply({
-          content: "There was an error while executing this command!",
-          flags: MessageFlags.Ephemeral,
-        });
-      }
+      const reply_method =
+        interaction.replied || interaction.deferred ? "followUp" : "reply";
+      await interaction[reply_method]({
+        content: "There was an error while executing this command!",
+        flags: MessageFlags.Ephemeral,
+      });
     }
   },
 };
