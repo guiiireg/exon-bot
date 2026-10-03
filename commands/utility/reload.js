@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
 
@@ -19,6 +19,24 @@ module.exports = {
    * @returns {Promise<void>}
    */
   async execute(interaction) {
+    // Restrict command execution to the application owner or team members
+    const application = interaction.client.application?.owner
+      ? interaction.client.application
+      : await interaction.client.application?.fetch();
+
+    const owner = application?.owner;
+    const is_owner =
+      owner &&
+      (owner.id === interaction.user.id ||
+        (owner.members && owner.members.has(interaction.user.id)));
+
+    if (!is_owner) {
+      return interaction.reply({
+        content: "This command can only be used by the bot owner!",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
     const command_name = interaction.options
       .getString("command", true)
       .toLowerCase();
