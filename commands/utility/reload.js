@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
+const fs = require("node:fs");
+const path = require("node:path");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -28,11 +30,32 @@ module.exports = {
       );
     }
 
-    // Purge module from Node's require cache so subsequent require() loads fresh code.
-    delete require.cache[require.resolve(`./${command.data.name}.js`)];
+    const commands_path = path.join(__dirname, "..");
+    const command_folders = fs.readdirSync(commands_path);
+    let command_file_path = null;
+
+    for (const folder of command_folders) {
+      const file_path = path.join(
+        commands_path,
+        folder,
+        `${command.data.name}.js`,
+      );
+      if (fs.existsSync(file_path)) {
+        command_file_path = file_path;
+        break;
+      }
+    }
+
+    if (!command_file_path) {
+      return interaction.reply(
+        `Could not find the file for command \`${command.data.name}\`!`,
+      );
+    }
 
     try {
-      const new_command = require(`./${command.data.name}.js`);
+      // Purge module from Node's require cache so subsequent require() loads fresh code
+      delete require.cache[require.resolve(command_file_path)];
+      const new_command = require(command_file_path);
       interaction.client.commands.set(new_command.data.name, new_command);
       await interaction.reply(
         `Command \`${new_command.data.name}\` was reloaded!`,
