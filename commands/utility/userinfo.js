@@ -7,7 +7,7 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.reply(
-      `Username: ${interaction.user.username}\nID: ${interaction.user.id}`,
+      `Username: ${interaction.user.username}\nID: ${interaction.user.id}\nJoined: ${interaction.member.joinedAt}`,
     );
   },
 };
