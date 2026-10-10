@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 import discord
 from discord import app_commands
@@ -34,8 +35,14 @@ async def ping(interaction: discord.Interaction) -> None:
     interaction : discord.Interaction
         The interaction object
     """
-    await interaction.response.send_message(
-        f"The latency is: {round(client.latency * 1000)}ms."
+    start_time = time.perf_counter()
+    await interaction.response.defer()
+    final_time = time.perf_counter()
+    response_time = final_time - start_time
+    response_time *= 1000
+    await interaction.edit_original_response(
+        content=f"The latency is: {round(client.latency * 1000)}ms. \n"
+        f"The Response Time is: {round(response_time)}ms."
     )
 
 
