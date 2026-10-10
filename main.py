@@ -4,7 +4,7 @@ import sys
 import time
 
 import discord
-from discord import ActionRow, Poll, app_commands, ui
+from discord import app_commands, ui
 from dotenv import load_dotenv
 
 load_dotenv()
