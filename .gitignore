@@ -1,9 +1,14 @@
-node_modules/
-
+# Secrets
 .env
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Virtuel env
+venv/
 
-AGENTS.md
+# Generated python files
+__pycache__/
+*.py[cod]
+
+# Tools and temp files
+.pytest_cache/
+.coverage
+
