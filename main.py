@@ -1,4 +1,5 @@
 import os
+import random
 import sys
 import time
 
@@ -26,24 +27,51 @@ tree = app_commands.CommandTree(client)
 
 
 @tree.command(guild=discord.Object(id=guild))
-async def ping(interaction: discord.Interaction) -> None:
+async def ping(inter: discord.Interaction) -> None:
     """
     Get the bot's latency
 
     Parameters
     ----------
-    interaction : discord.Interaction
+    inter : discord.Interaction
         The interaction object
     """
     start_time = time.perf_counter()
-    await interaction.response.defer()
+    await inter.response.defer()
     final_time = time.perf_counter()
     response_time = final_time - start_time
     response_time *= 1000
-    await interaction.edit_original_response(
+    await inter.edit_original_response(
         content=f"The latency is: {round(client.latency * 1000)}ms. \n"
         f"The Response Time is: {round(response_time)}ms."
     )
+
+
+@tree.command(guild=discord.Object(id=guild))
+async def choose(inter: discord.Interaction, options: str) -> None:
+    """
+    Choose a random option between the options
+
+    Parameters
+    ----------
+    inter : discord.Interaction
+        The interaction object
+    options: str
+        The options to choose
+    """
+    choices = options.split(",")
+    for index in range(len(choices)):
+        choices[index] = choices[index].strip()
+        if not choices[index]:
+            await inter.response.send_message(
+                "One option is empty. Separate the options with commas without leaving any empty field."
+            )
+            return
+    if len(choices) < 2:
+        await inter.response.send_message("You need at least two options.")
+        return
+    chosen = random.choice(choices)
+    await inter.response.send_message(f"{chosen}")
 
 
 if token is None:
