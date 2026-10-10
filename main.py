@@ -34,7 +34,9 @@ async def ping(interaction: discord.Interaction) -> None:
     interaction : discord.Interaction
         The interaction object
     """
-    await interaction.response.send_message("Pong")
+    await interaction.response.send_message(
+        f"The latency is: {round(client.latency * 1000)}ms."
+    )
 
 
 if token is None:
