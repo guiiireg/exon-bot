@@ -2,9 +2,10 @@ import os
 import random
 import sys
 import time
+from email import message
 
 import discord
-from discord import ActionRow, Poll, app_commands, ui
+from discord import app_commands, ui
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -129,6 +130,23 @@ class PollView(ui.LayoutView):
         return text_result
 
 
+class PollErrorView(ui.LayoutView):
+    """
+    Shows an error message.
+    Uses Discord Components v2.
+
+    Args:
+        message: The error message to display.
+    """
+
+    def __init__(self, message: str) -> None:
+        super().__init__()
+        self.message = message
+
+        text_display = ui.TextDisplay(message)
+        self.add_item(text_display)
+
+
 @tree.command(guild=discord.Object(id=guild))
 async def poll(inter: discord.Interaction, question: str, options: str) -> None:
     """
@@ -143,7 +161,7 @@ async def poll(inter: discord.Interaction, question: str, options: str) -> None:
     choices = options.split(",")
     fixed_question = question.strip()
     if not fixed_question:
-        await inter.response.send_message("The question is empty.")
+        await inter.response.send_message(view=PollErrorView("test"))
         return
     for index in range(len(choices)):
         choices[index] = choices[index].strip()
