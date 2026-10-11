@@ -2,7 +2,6 @@ import os
 import random
 import sys
 import time
-from email import message
 
 import discord
 from discord import app_commands, ui
@@ -161,7 +160,11 @@ async def poll(inter: discord.Interaction, question: str, options: str) -> None:
     choices = options.split(",")
     fixed_question = question.strip()
     if not fixed_question:
-        await inter.response.send_message(view=PollErrorView("test"))
+        await inter.response.send_message(
+            view=PollErrorView(
+                "Question can't be empty. Make sure there is a message inside."
+            )
+        )
         return
     for index in range(len(choices)):
         choices[index] = choices[index].strip()
