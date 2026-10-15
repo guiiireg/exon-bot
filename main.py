@@ -5,8 +5,10 @@ application command tree sync to establish the WebSocket connection.
 """
 
 import os
+import traceback
 
 import discord
+from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -31,6 +33,37 @@ class ExonBot(commands.Bot):
         """Initialize the bot instance with default intents and no message prefix"""
         intents = discord.Intents.default()
         super().__init__(command_prefix=[], intents=intents)
+
+    async def on_app_command_error(
+        self, interaction: discord.Interaction, error: app_commands.AppCommandError
+    ) -> None:
+        """Global error handler for app slash commands
+
+        Args:
+            interaction: The interaction context where the error occurred.
+            error: The exception raised during command execution.
+        """
+        if isinstance(error, app_commands.CommandOnCooldown):
+            message = f"This command is on cooldown. Try again {error.retry_after:.1f} seconds"
+        elif isinstance(error, app_commands.MissingPermissions):
+            missing_perms = ", ".join(error.missing_permissions)
+            message = f"You are missing required permissions: {missing_perms}"
+        elif isinstance(error, app_commands.BotMissingPermissions):
+            missing_perms = ", ".join(error.missing_permissions)
+            message = (
+                f"I am missing required permissions to execute this: {missing_perms}"
+            )
+        else:
+            message = "An unexpected error occurred while processing this command"
+            print(
+                f"Unhandled command error in '/{interaction.command.name if interaction.command else 'unknown'}:"
+            )
+            traceback.print_exception(type(error), error, error.__traceback__)
+
+        if interaction.response.is_done():
+            await interaction.followup.send(message, ephemeral=True)
+        else:
+            await interaction.response.send_message(message, ephemeral=True)
 
     async def setup_hook(self) -> None:
         """Execute async setup tasks prior to websocket connection
