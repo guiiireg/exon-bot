@@ -47,7 +47,7 @@ bot = ExonBot()
 
 
 @bot.tree.command(name="ping", description="Responds with the bot latency")
-async def ping(interaction: discord.Interaction):
+async def ping(interaction: discord.Interaction) -> None:
     """Handle the /ping slash command to check responsiveness and WebSocket latency
 
     Args:
@@ -55,6 +55,46 @@ async def ping(interaction: discord.Interaction):
     """
     latency_ms: int = round(bot.latency * 1000)
     await interaction.response.send_message(f"{latency_ms} ms")
+
+
+@bot.tree.command(
+    name="server-info", description="Displays details about the current server"
+)
+async def server_info(interaction: discord.Interaction) -> None:
+    """Handle the /server-info slash command to display server stats
+
+    Args:
+        interaction: The Discord interaction context triggered by the user.
+    """
+    guild = interaction.guild
+
+    # Fallback guard if the command is executed outside of a guild context
+    if not guild:
+        await interaction.response.send_message(
+            "This command can only be executed within a server",
+            ephemeral=True,
+        )
+        return
+
+    # Create the embed response
+    embed = discord.Embed(
+        title=f"Server Information: {guild.name}",
+        color=discord.Color.blue(),
+    )
+
+    # Add thumbnail if server icon exists
+    if guild.icon:
+        embed.set_thumbnail(url=guild.icon.url)
+
+    # Add information fields
+    embed.add_field(name="Server ID", value=str(guild.id), inline=True)
+    embed.add_field(name="Member Count", value=str(guild.member_count), inline=True)
+
+    if guild.created_at:
+        formatted_date = discord.utils.format_dt(guild.created_at, style="F")
+        embed.add_field(name="Created On", value=formatted_date, inline=False)
+
+    await interaction.response.send_message(embed=embed)
 
 
 if __name__ == "__main__":
