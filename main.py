@@ -33,15 +33,22 @@ class ExonBot(commands.Bot):
         super().__init__(command_prefix=[], intents=intents)
 
     async def setup_hook(self) -> None:
-        """Execute async setup tasks prior to websocket connection.
+        """Execute async setup tasks prior to websocket connection
 
-        Loads extensions and syncs application commands once before startup.
+        Dynamically load all valid cogs from the cogs directory and syncs
+        application commands once before startup.
         """
-        await self.load_extension("cogs.general")
+        cogs_dir = "./cogs"
+        if os.path.exists(cogs_dir):
+            for filename in os.listdir(cogs_dir):
+                if filename.endswith(".py") and not filename.startswith("_"):
+                    extension_name = f"cogs.{filename[:-3]}"
+                    await self.load_extension(extension_name)
+                    print(f"Loaded extensions: {extension_name}")
 
         self.tree.copy_global_to(guild=GUILD_OBJ)
         synced_commands = await self.tree.sync(guild=GUILD_OBJ)
-        print(f"Successfully sync {len(synced_commands)} commands to server.")
+        print(f"Successfully synchronized {len(synced_commands)} commands to server")
 
     async def on_ready(self) -> None:
         """Event handler triggered when the bot connection is established"""
