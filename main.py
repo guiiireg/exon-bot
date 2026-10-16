@@ -12,6 +12,8 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 
+from database.db import DatabaseManager
+
 # Load env variables
 load_dotenv()
 
@@ -33,6 +35,7 @@ class ExonBot(commands.Bot):
         """Initialize the bot instance with default intents and no message prefix"""
         intents = discord.Intents.default()
         super().__init__(command_prefix=[], intents=intents)
+        self.db = DatabaseManager()
 
     async def on_app_command_error(
         self, interaction: discord.Interaction, error: app_commands.AppCommandError
@@ -82,6 +85,9 @@ class ExonBot(commands.Bot):
         self.tree.copy_global_to(guild=GUILD_OBJ)
         synced_commands = await self.tree.sync(guild=GUILD_OBJ)
         print(f"Successfully synchronized {len(synced_commands)} commands to server")
+
+        await self.db.init_db()
+        print("Database initialized successfully.")
 
     async def on_ready(self) -> None:
         """Event handler triggered when the bot connection is established"""
