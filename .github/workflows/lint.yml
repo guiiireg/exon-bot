@@ -12,10 +12,10 @@ jobs:
           python-version: "3.14.8"
 
       - name: Install dependencies
-        runs: pip install ruff
+        run: pip install ruff
 
       - name: Lint
-        runs: ruffy check .
+        run: ruff check .
 
       - name: Check formatting
-        runs: ruff format --check .
+        run: ruff format --check .
