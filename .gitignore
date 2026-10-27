@@ -1,5 +1,22 @@
-.venv/
+# Environment
 .env
+
+# Python
 __pycache__/
-.vscode/
-bot_data.db
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# Databases
+*.db
+*.sqlite3
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
